@@ -5,7 +5,7 @@ const Problem = require('../models/problems');
 // GET /api/problems
 router.get('/', async (req, res) => {
   try {
-    const problems = await Problem.find({}, { title: 1 }); // Only fetch titles and _id
+    const problems = await Problem.find(); // Only fetch titles and _id
     res.json(problems);
   } catch (err) {
     res.status(500).json({ message: err.message });
