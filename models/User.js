@@ -4,7 +4,8 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true }, // Hashed password
-  submissions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Submission' }] // New field
+  submissions: [{ type: Number }],
+  score: { type: Number, default: 0 } // Add this line
 });
 
 const User = mongoose.model('User', userSchema);
