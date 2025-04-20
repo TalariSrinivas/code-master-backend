@@ -42,6 +42,21 @@ router.post('/login', async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
+    // ✅ Add current login date (without time) if not already in array
+    const currentDate = new Date().toISOString().split('T')[0]; // Only the date (YYYY-MM-DD)
+    user.loginDates = user.loginDates || []; // Make sure it's defined
+
+    // Convert all existing dates in loginDates to 'YYYY-MM-DD' format for proper comparison
+    const formattedLoginDates = user.loginDates.map(date => new Date(date).toISOString().split('T')[0]);
+
+    // Check if current date (YYYY-MM-DD) is already in the loginDates array
+    const isDateAlreadyPresent = formattedLoginDates.includes(currentDate);
+    
+    if (!isDateAlreadyPresent) {
+      user.loginDates.push(new Date()); // Push the full date object, which includes the time
+      await user.save(); // Save user with updated loginDates
+    }
+
     // Generate Token
     const token = jwt.sign({ id: user._id }, 'your_secret_key', { expiresIn: '1h' });
 
